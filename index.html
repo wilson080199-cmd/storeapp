@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StoreApp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e1117;
+      --surface: #161b27;
+      --surface2: #1e2535;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text: #ffffff;
+      --text2: #a0aec0;
+      --muted: #4a5568;
+      --blue: #3b82f6;
+      --blue2: #2563eb;
+      --cyan: #38bdf8;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* SUBTLE GRID */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 56px; height: 60px;
+      background: rgba(14,17,23,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--text); letter-spacing: -0.3px;
+    }
+
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--text2); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 80px 24px 56px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4rem);
+      font-weight: 700; line-height: 1.12;
+      letter-spacing: -1.5px;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .hero p {
+      color: var(--text2);
+      font-size: 0.92rem;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    /* PLATFORM BADGES */
+    .plat-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      width: fit-content; margin-left: auto; margin-right: auto;
+      overflow: hidden;
+    }
+
+    .plat-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 28px;
+      font-size: 0.85rem; font-weight: 600; color: var(--text);
+    }
+
+    .plat-item .plat-icon { font-size: 1rem; }
+
+    .plat-divider {
+      width: 1px; height: 28px;
+      background: var(--border2);
+      flex-shrink: 0;
+    }
+
+    /* STATS ROW */
+    .stats-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 28px; margin-top: 16px;
+      font-size: 0.8rem; color: var(--text2);
+    }
+
+    .stats-row span b {
+      color: var(--text); font-weight: 700;
+    }
+
+    .stats-dot {
+      width: 3px; height: 3px;
+      background: var(--muted); border-radius: 50%;
+    }
+
+    /* SEARCH */
+    .search-wrap {
+      position: relative; z-index: 1;
+      max-width: 500px; margin: 40px auto 24px;
+      padding: 0 24px;
+    }
+
+    .search-inner { position: relative; }
+
+    .search-box {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 11px 18px 11px 42px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.875rem; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box::placeholder { color: var(--muted); }
+    .search-box:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .search-ico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.95rem; }
+
+    /* PLATFORM TABS */
+    .plat-tabs {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .plat-tab {
+      display: flex; align-items: center; gap: 6px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text2); padding: 7px 18px;
+      border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .plat-tab:hover { border-color: var(--border2); color: var(--text); }
+    .plat-tab.active { background: var(--blue2); border-color: var(--blue2); color: #fff; }
+
+    /* CATEGORY FILTERS */
+    .filters {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+      padding: 0 24px; margin-bottom: 48px;
+    }
+
+    .filter-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text2); padding: 6px 16px;
+      border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+    .filter-btn.active { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+
+    /* SECTION */
+    .section {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .sec-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .sec-title {
+      font-size: 0.95rem; font-weight: 700;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sec-title::before { content: ''; width: 3px; height: 16px; background: var(--blue); border-radius: 3px; }
+
+    .sec-count { font-size: 0.72rem; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 3px 10px; border-radius: 6px; font-weight: 600; }
+
+    /* GRID */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    /* CARD */
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      position: relative; overflow: hidden;
+      animation: up 0.35s ease both;
+    }
+    @keyframes up { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .app-card:hover { border-color: var(--border2); box-shadow: 0 8px 32px rgba(0,0,0,0.35); transform: translateY(-2px); }
+
+    .card-head {
+      display: flex; align-items: flex-start; gap: 13px; margin-bottom: 10px;
+    }
+
+    .app-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.35rem; flex-shrink: 0;
+    }
+
+    .app-meta { flex: 1; min-width: 0; }
+    .app-name { font-size: 0.92rem; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-cat { font-size: 0.68rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .ver-tag {
+      font-size: 0.67rem; font-weight: 700;
+      color: var(--cyan);
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.18);
+      padding: 3px 8px; border-radius: 5px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .app-desc {
+      font-size: 0.8rem; color: var(--text2);
+      line-height: 1.65; margin-bottom: 14px;
+    }
+
+    /* PLATFORM CHIPS */
+    .app-platforms { display: flex; gap: 6px; margin-bottom: 14px; }
+    .plat-chip {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.68rem; font-weight: 700;
+      padding: 3px 9px; border-radius: 5px;
+    }
+    .plat-chip.android { background: rgba(52,211,153,0.08); color: #34d399; border: 1px solid rgba(52,211,153,0.18); }
+    .plat-chip.pc { background: rgba(59,130,246,0.08); color: var(--blue); border: 1px solid rgba(59,130,246,0.18); }
+
+    /* DOWNLOAD BUTTONS */
+    .card-foot { display: flex; gap: 8px; }
+
+    .btn-dl {
+      flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      border: none; padding: 8px 12px; border-radius: 8px;
+      font-size: 0.76rem; font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-dl:hover { opacity: 0.85; transform: scale(1.02); }
+    .btn-android { background: linear-gradient(135deg, #166534, #16a34a); color: #fff; }
+    .btn-pc { background: linear-gradient(135deg, #1d4ed8, #3b82f6); color: #fff; }
+    .btn-dl svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+    /* BADGES */
+    .badge {
+      position: absolute; top: 13px; right: 13px;
+      font-size: 0.6rem; font-weight: 800;
+      padding: 3px 7px; border-radius: 5px;
+      letter-spacing: 0.4px; text-transform: uppercase;
+    }
+    .badge-new { background: rgba(56,189,248,0.12); color: var(--cyan); border: 1px solid rgba(56,189,248,0.25); }
+    .badge-upd { background: rgba(59,130,246,0.12); color: var(--blue); border: 1px solid rgba(59,130,246,0.25); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    .empty { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
+    .empty-ico { font-size:2.5rem; margin-bottom:12px; }
+
+    .loading { grid-column:1/-1; text-align:center; padding:60px; color:var(--muted); }
+    .spinner { width:28px; height:28px; border:2px solid var(--border); border-top-color:var(--blue); border-radius:50%; animation:spin 0.7s linear infinite; margin:0 auto 12px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 28px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 0.75rem;
+    }
+
+    @media (max-width:768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 50px 20px 36px; }
+      .apps-grid { grid-template-columns: 1fr; }
+      .plat-row { flex-direction: column; }
+      .plat-divider { width: 80%; height: 1px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">StoreApp</div>
+  <ul class="nav-links">
+    <li><a href="#">Inicio</a></li>
+    <li><a href="#">Apps</a></li>
+    <li><a href="#">Novedades</a></li>
+    <li><a href="#">Acerca de</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Android &amp; PC,<br>en un solo lugar</h1>
+  <p>Descarga mis aplicaciones directamente. Sin intermediarios.<br>Siempre la versión más reciente.</p>
+
+  <div class="plat-row">
+    <div class="plat-item"><span class="plat-icon">🤖</span> Android APK</div>
+    <div class="plat-divider"></div>
+    <div class="plat-item"><span class="plat-icon">🖥️</span> Windows / PC</div>
+  </div>
+
+  <div class="stats-row">
+    <span>Apps publicadas: <b id="stat-apps">—</b></span>
+    <div class="stats-dot"></div>
+    <span>Para Android: <b id="stat-android">—</b></span>
+    <div class="stats-dot"></div>
+    <span>Para PC: <b id="stat-pc">—</b></span>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-inner">
+    <span class="search-ico">🔍</span>
+    <input class="search-box" type="text" id="search" placeholder="Buscar apps..." oninput="filterApps()"/>
+  </div>
+</div>
+
+<!-- PLATFORM TABS -->
+<div class="plat-tabs">
+  <button class="plat-tab active" onclick="filterPlat('todas',this)">📦 Todas</button>
+  <button class="plat-tab" onclick="filterPlat('android',this)">🤖 Android</button>
+  <button class="plat-tab" onclick="filterPlat('pc',this)">🖥️ PC</button>
+</div>
+
+<!-- CATEGORY FILTERS -->
+<div class="filters" id="filters">
+  <button class="filter-btn active" onclick="filterCat('todas',this)">Todas</button>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-title">Aplicaciones disponibles</div>
+    <div class="sec-count" id="count">—</div>
+  </div>
+  <div class="apps-grid" id="apps-grid">
+    <div class="loading"><div class="spinner"></div>Cargando apps...</div>
+  </div>
+</div>
+
+<footer>StoreApp · Desarrollado por Wilson · Android &amp; PC</footer>
+
+<script>
+  const iconColors = [
+    'linear-gradient(135deg,#1e40af,#3b82f6)',
+    'linear-gradient(135deg,#166534,#16a34a)',
+    'linear-gradient(135deg,#1e3a5f,#38bdf8)',
+    'linear-gradient(135deg,#5b21b6,#8b5cf6)',
+    'linear-gradient(135deg,#92400e,#f59e0b)',
+    'linear-gradient(135deg,#9f1239,#f43f5e)',
+  ];
+
+  let allApps = [];
+  let currentCat = 'todas';
+  let currentPlat = 'todas';
+
+  async function loadApps() {
+    try {
+      const res = await fetch('apps.json');
+      if (!res.ok) throw new Error();
+      allApps = await res.json();
+    } catch {
+      allApps = [
+        { id:"demo1", nombre:"Mi App Android", categoria:"Utilidades", version:"1.0.0", descripcion:"App de ejemplo solo para Android. Edita apps.json para agregar tus apps reales.", icono:"🚀", tamano_android:"2.4 MB", url_android:"#", url_pc:null, nuevo:true },
+        { id:"demo2", nombre:"App para PC", categoria:"Herramientas", version:"0.9.0", descripcion:"App de ejemplo solo para PC. Cuando subas tus archivos reales aparecerán aquí.", icono:"🛠️", tamano_pc:"8.1 MB", url_android:null, url_pc:"#", actualizacion:false },
+        { id:"demo3", nombre:"App Multiplataforma", categoria:"Productividad", version:"2.0.0", descripcion:"Disponible tanto para Android como para PC con descarga directa.", icono:"⚡", tamano_android:"3.2 MB", tamano_pc:"12.5 MB", url_android:"#", url_pc:"#" }
+      ];
+    }
+
+    buildFilters();
+    renderApps(allApps);
+    document.getElementById('stat-apps').textContent = allApps.length;
+    document.getElementById('stat-android').textContent = allApps.filter(a => a.url_android).length;
+    document.getElementById('stat-pc').textContent = allApps.filter(a => a.url_pc).length;
+  }
+
+  function buildFilters() {
+    const cats = ['todas', ...new Set(allApps.map(a => a.categoria))];
+    document.getElementById('filters').innerHTML = cats.map(c =>
+      `<button class="filter-btn ${c==='todas'?'active':''}" onclick="filterCat('${c}',this)">${c.charAt(0).toUpperCase()+c.slice(1)}</button>`
+    ).join('');
+  }
+
+  const dlIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v12M8 12l4 4 4-4"/><path d="M4 20h16"/></svg>`;
+
+  function renderApps(apps) {
+    const grid = document.getElementById('apps-grid');
+    document.getElementById('count').textContent = apps.length + ' app' + (apps.length !== 1 ? 's' : '');
+    if (!apps.length) {
+      grid.innerHTML = `<div class="empty"><div class="empty-ico">🔍</div><p>No se encontraron apps.</p></div>`;
+      return;
+    }
+    grid.innerHTML = apps.map((app, i) => {
+      const color = iconColors[i % iconColors.length];
+      const badge = app.nuevo ? '<div class="badge badge-new">Nuevo</div>' : app.actualizacion ? '<div class="badge badge-upd">↑ Update</div>' : '';
+      const platforms = [
+        app.url_android ? `<div class="plat-chip android">🤖 Android</div>` : '',
+        app.url_pc ? `<div class="plat-chip pc">🖥️ PC</div>` : ''
+      ].join('');
+      const btns = [
+        app.url_android ? `<a class="btn-dl btn-android" href="${app.url_android}" ${app.url_android!=='#'?'download':''}>${dlIcon} Android${app.tamano_android?' · '+app.tamano_android:''}</a>` : '',
+        app.url_pc ? `<a class="btn-dl btn-pc" href="${app.url_pc}" ${app.url_pc!=='#'?'download':''}>${dlIcon} PC${app.tamano_pc?' · '+app.tamano_pc:''}</a>` : ''
+      ].join('');
+      return `
+      <div class="app-card" style="animation-delay:${i*0.06}s">
+        ${badge}
+        <div class="card-head">
+          <div class="app-icon" style="background:${color}">${app.icono||'📦'}</div>
+          <div class="app-meta">
+            <div class="app-name">${app.nombre}</div>
+            <div class="app-cat">${app.categoria}</div>
+          </div>
+          <div class="ver-tag">v${app.version}</div>
+        </div>
+        <p class="app-desc">${app.descripcion}</p>
+        <div class="app-platforms">${platforms}</div>
+        <div class="card-foot">${btns}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterPlat(plat, btn) {
+    currentPlat = plat;
+    document.querySelectorAll('.plat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterApps();
+  }
+
+  function filterCat(cat, btn) {
+    currentCat = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterApps();
+  }
+
+  function filterApps() {
+    const q = document.getElementById('search').value.toLowerCase();
+    let f = allApps;
+    if (currentPlat === 'android') f = f.filter(a => a.url_android);
+    if (currentPlat === 'pc') f = f.filter(a => a.url_pc);
+    if (currentCat !== 'todas') f = f.filter(a => a.categoria === currentCat);
+    if (q) f = f.filter(a => a.nombre.toLowerCase().includes(q) || a.descripcion.toLowerCase().includes(q));
+    renderApps(f);
+  }
+
+  loadApps();
+</script>
+</body>
+</html>

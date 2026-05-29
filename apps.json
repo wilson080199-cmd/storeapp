@@ -1,0 +1,44 @@
+[
+  {
+    "id": "app1",
+    "nombre": "Mi Primera App",
+    "categoria": "Utilidades",
+    "version": "1.0.0",
+    "descripcion": "Descripción breve de lo que hace esta app.",
+    "icono": "🚀",
+    "nuevo": true,
+    "actualizacion": false,
+    "url_android": "https://firebasestorage.googleapis.com/TU_URL_AQUI/app1.apk",
+    "tamano_android": "2.4 MB",
+    "url_pc": null,
+    "tamano_pc": null
+  },
+  {
+    "id": "app2",
+    "nombre": "App para PC",
+    "categoria": "Herramientas",
+    "version": "0.9.0",
+    "descripcion": "Descripción breve de lo que hace esta app.",
+    "icono": "🛠️",
+    "nuevo": false,
+    "actualizacion": false,
+    "url_android": null,
+    "tamano_android": null,
+    "url_pc": "https://firebasestorage.googleapis.com/TU_URL_AQUI/app2.exe",
+    "tamano_pc": "8.1 MB"
+  },
+  {
+    "id": "app3",
+    "nombre": "App Multiplataforma",
+    "categoria": "Productividad",
+    "version": "2.0.0",
+    "descripcion": "Disponible tanto para Android como para PC.",
+    "icono": "⚡",
+    "nuevo": false,
+    "actualizacion": true,
+    "url_android": "https://firebasestorage.googleapis.com/TU_URL_AQUI/app3.apk",
+    "tamano_android": "3.2 MB",
+    "url_pc": "https://firebasestorage.googleapis.com/TU_URL_AQUI/app3.exe",
+    "tamano_pc": "12.5 MB"
+  }
+]
